@@ -49,7 +49,7 @@ There could be many "file_group" regions (and hence many files). Possible format
 * BER64
 * XML
 
-Usually output of the program is in XML. But please keep in mind - the output XML may be used as an input! Yes, you can parse BER (DER, CER) ASN.1 binary data, get XML file, change this XML file whatever you want and encode it back to binary. Is not it funny? :) Schema for output/input XML is in "code/CompliXML.xsd".
+Usually output of the program is XML. But please keep in mind - the output XML may be used as an input! Yes, you can parse BER (DER, CER) ASN.1 binary data, get XML file, change in this XML file whatever you want and encode it back to binary. Is not it funny? :) Schema for output/input XML is in "code/CompliXML.xsd".
 
 ## Limitations
 
