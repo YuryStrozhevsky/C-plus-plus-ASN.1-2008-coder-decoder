@@ -1,0 +1,1258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:simpleType name="bool">
+		<xs:annotation>
+			<xs:documentation>Typical boolean type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="true"/>
+			<xs:enumeration value="false"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="hexstring">
+		<xs:annotation>
+			<xs:documentation>Typical type for hexdecimal (octet) strings</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9A-Fa-f\s]*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="indentification_block_type">
+		<xs:annotation>
+			<xs:documentation>Type for standard identification block</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="common_block">
+				<xs:sequence minOccurs="0">
+					<xs:element name="tag_class">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="UNIVERSAL"/>
+								<xs:enumeration value="APPLICATION"/>
+								<xs:enumeration value="PRIVATE"/>
+								<xs:enumeration value="CONTEXT_SPECIFIC"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="is_constructed" type="bool"/>
+					<xs:choice>
+						<xs:element name="value_dec" type="xs:unsignedLong"/>
+						<xs:element name="value_hex" type="hexstring"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="length_block_type">
+		<xs:annotation>
+			<xs:documentation>Type for standard length block</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="common_block">
+				<xs:sequence minOccurs="0">
+					<xs:element name="is_indefinite_form" type="bool"/>
+					<xs:element name="long_form_used" type="bool"/>
+					<xs:element name="length" type="xs:unsignedLong"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="common_block">
+		<xs:annotation>
+			<xs:documentation>Common items for all blocks</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="warnings" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="warning" type="xs:string" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="error" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="asn1_type">
+		<xs:annotation>
+			<xs:documentation>Basic type for all other ASN.1 types</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="common_block">
+				<xs:sequence minOccurs="0">
+					<xs:element name="identification_block" type="indentification_block_type"/>
+					<xs:element name="length_block" type="length_block_type" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="ASN1_TYPE">
+		<xs:annotation>
+			<xs:documentation>Representation for any ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:choice minOccurs="0">
+											<xs:sequence>
+												<xs:element name="value_hex" type="hexstring"/>
+											</xs:sequence>
+											<xs:choice maxOccurs="unbounded">
+												<xs:element ref="BIT_STRING"/>
+												<xs:element ref="BMPSTRING"/>
+												<xs:element ref="BOOLEAN"/>
+												<xs:element ref="CHARACTERSTRING"/>
+												<xs:element ref="DATE"/>
+												<xs:element ref="DATETIME"/>
+												<xs:element ref="DURATION"/>
+												<xs:element ref="EMBEDDEDPDV"/>
+												<xs:element ref="ENUMERATED"/>
+												<xs:element ref="EXTERNAL"/>
+												<xs:element ref="GENERALIZEDTIME"/>
+												<xs:element ref="GENERALSTRING"/>
+												<xs:element ref="GRAPHICSTRING"/>
+												<xs:element ref="IA5STRING"/>
+												<xs:element ref="INTEGER"/>
+												<xs:element ref="NULL"/>
+												<xs:element ref="NUMERICSTRING"/>
+												<xs:element ref="OBJECT_DESCRIPTOR"/>
+												<xs:element ref="OBJECT_IDENTIFIER"/>
+												<xs:element ref="OCTET_STRING"/>
+												<xs:element ref="OID_INTERNATIONALIZED"/>
+												<xs:element ref="PRINTABLESTRING"/>
+												<xs:element ref="REAL"/>
+												<xs:element ref="RELATIVE_OBJECT_IDENTIFIER"/>
+												<xs:element ref="RELATIVE_OID_INTERNATIONALIZED"/>
+												<xs:element ref="SEQUENCE"/>
+												<xs:element ref="SET"/>
+												<xs:element ref="TELETEXSTRING"/>
+												<xs:element ref="TIME"/>
+												<xs:element ref="TIME_OF_DAY"/>
+												<xs:element ref="UNIVERSALSTRING"/>
+												<xs:element ref="UTCTIME"/>
+												<xs:element ref="UTF8STRING"/>
+												<xs:element ref="VIDEOTEXSTRING"/>
+												<xs:element ref="VISIBLESTRING"/>
+												<xs:element ref="ASN1_TYPE"/>
+											</xs:choice>
+										</xs:choice>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="BIT_STRING">
+		<xs:annotation>
+			<xs:documentation>Representation for BIT STRING ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:choice minOccurs="0">
+											<xs:sequence>
+												<xs:element name="unused_bits">
+													<xs:simpleType>
+														<xs:restriction base="xs:int">
+															<xs:enumeration value="0"/>
+															<xs:enumeration value="1"/>
+															<xs:enumeration value="2"/>
+															<xs:enumeration value="3"/>
+															<xs:enumeration value="4"/>
+															<xs:enumeration value="5"/>
+															<xs:enumeration value="6"/>
+															<xs:enumeration value="7"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:element>
+												<xs:element name="value_hex">
+													<xs:simpleType>
+														<xs:restriction base="xs:string">
+															<xs:pattern value="[0-1\s]+"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:element>
+											</xs:sequence>
+											<xs:sequence>
+												<xs:element ref="BIT_STRING" maxOccurs="unbounded"/>
+											</xs:sequence>
+										</xs:choice>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="OCTET_STRING">
+		<xs:annotation>
+			<xs:documentation>Representation for OCTET STRING ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:choice minOccurs="0">
+											<xs:sequence>
+												<xs:element ref="OCTET_STRING" maxOccurs="unbounded"/>
+											</xs:sequence>
+											<xs:sequence>
+												<xs:element name="value_hex" type="hexstring"/>
+											</xs:sequence>
+										</xs:choice>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="INTEGER">
+		<xs:annotation>
+			<xs:documentation>Representation for INTEGER ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:choice minOccurs="0">
+											<xs:element name="value_dec" type="xs:long"/>
+											<xs:element name="value_hex" type="hexstring"/>
+										</xs:choice>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="REAL">
+		<xs:annotation>
+			<xs:documentation>Representation for REAL ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="information_block">
+												<xs:complexType>
+													<xs:complexContent>
+														<xs:extension base="common_block">
+															<xs:sequence minOccurs="0">
+																<xs:element name="is_special_value" type="bool"/>
+																<xs:element name="special_value" minOccurs="0">
+																	<xs:simpleType>
+																		<xs:restriction base="xs:string">
+																			<xs:enumeration value="PLUS-INFINITY"/>
+																			<xs:enumeration value="MINUS-INFINITY"/>
+																			<xs:enumeration value="NOT-A-NUMBER"/>
+																			<xs:enumeration value="minus zero"/>
+																		</xs:restriction>
+																	</xs:simpleType>
+																</xs:element>
+																<xs:element name="base" minOccurs="0">
+																	<xs:simpleType>
+																		<xs:restriction base="xs:int">
+																			<xs:enumeration value="2"/>
+																			<xs:enumeration value="8"/>
+																			<xs:enumeration value="16"/>
+																			<xs:enumeration value="10"/>
+																		</xs:restriction>
+																	</xs:simpleType>
+																</xs:element>
+																<xs:choice minOccurs="0">
+																	<xs:sequence>
+																		<xs:element name="scaling_factor">
+																			<xs:simpleType>
+																				<xs:restriction base="xs:int">
+																					<xs:enumeration value="0"/>
+																					<xs:enumeration value="1"/>
+																					<xs:enumeration value="2"/>
+																					<xs:enumeration value="3"/>
+																				</xs:restriction>
+																			</xs:simpleType>
+																		</xs:element>
+																		<xs:element name="is_negative" type="bool"/>
+																		<xs:element name="exponent_format">
+																			<xs:simpleType>
+																				<xs:restriction base="xs:int">
+																					<xs:enumeration value="1"/>
+																					<xs:enumeration value="2"/>
+																					<xs:enumeration value="3"/>
+																					<xs:enumeration value="4"/>
+																				</xs:restriction>
+																			</xs:simpleType>
+																		</xs:element>
+																	</xs:sequence>
+																	<xs:element name="NR_form">
+																		<xs:simpleType>
+																			<xs:restriction base="xs:int">
+																				<xs:enumeration value="1"/>
+																				<xs:enumeration value="2"/>
+																				<xs:enumeration value="3"/>
+																			</xs:restriction>
+																		</xs:simpleType>
+																	</xs:element>
+																</xs:choice>
+															</xs:sequence>
+														</xs:extension>
+													</xs:complexContent>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="exponent_block" minOccurs="0">
+												<xs:complexType>
+													<xs:complexContent>
+														<xs:extension base="common_block">
+															<xs:sequence minOccurs="0">
+																<xs:element name="is_hex_only" type="bool"/>
+																<xs:choice>
+																	<xs:element name="value_dec" type="xs:long"/>
+																	<xs:element name="value_hex" type="hexstring"/>
+																</xs:choice>
+															</xs:sequence>
+														</xs:extension>
+													</xs:complexContent>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="mantissa_block" minOccurs="0">
+												<xs:complexType>
+													<xs:complexContent>
+														<xs:extension base="common_block">
+															<xs:sequence minOccurs="0">
+																<xs:element name="is_hex_only" type="bool"/>
+																<xs:choice>
+																	<xs:element name="value_dec" type="xs:unsignedLong"/>
+																	<xs:element name="value_hex" type="hexstring"/>
+																</xs:choice>
+															</xs:sequence>
+														</xs:extension>
+													</xs:complexContent>
+												</xs:complexType>
+											</xs:element>
+											<xs:choice minOccurs="0">
+												<xs:element name="value_dec" type="xs:double"/>
+												<xs:element name="value_hex" type="xs:string"/>
+											</xs:choice>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="NULL">
+		<xs:annotation>
+			<xs:documentation>Representation for NULL ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block" type="common_block"/>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="OBJECT_IDENTIFIER">
+		<xs:annotation>
+			<xs:documentation>Representation for OBJECT IDENTIFIER ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="sid_blocks">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="sid_block" maxOccurs="unbounded">
+															<xs:complexType>
+																<xs:complexContent>
+																	<xs:extension base="common_block">
+																		<xs:sequence minOccurs="0">
+																			<xs:element name="is_first_sid" type="bool"/>
+																			<xs:element name="is_hex_only" type="bool"/>
+																			<xs:choice>
+																				<xs:element name="value_dec" type="xs:unsignedLong"/>
+																				<xs:element name="value_hex" type="hexstring"/>
+																			</xs:choice>
+																		</xs:sequence>
+																	</xs:extension>
+																</xs:complexContent>
+															</xs:complexType>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="is_hex_only" type="bool"/>
+											<xs:choice>
+												<xs:element name="value_dec" type="xs:string"/>
+												<xs:element name="value_hex" type="xs:string"/>
+											</xs:choice>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RELATIVE_OBJECT_IDENTIFIER">
+		<xs:annotation>
+			<xs:documentation>Representation for RELATIVE OBJECT IDENTIFIER ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="sid_blocks">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="sid_block" maxOccurs="unbounded">
+															<xs:complexType>
+																<xs:complexContent>
+																	<xs:extension base="common_block">
+																		<xs:sequence minOccurs="0">
+																			<xs:element name="is_first_sid" type="bool"/>
+																			<xs:element name="is_hex_only" type="bool"/>
+																			<xs:choice>
+																				<xs:element name="value_dec" type="xs:unsignedLong"/>
+																				<xs:element name="value_hex" type="hexstring"/>
+																			</xs:choice>
+																		</xs:sequence>
+																	</xs:extension>
+																</xs:complexContent>
+															</xs:complexType>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="is_hex_only" type="bool"/>
+											<xs:choice>
+												<xs:element name="value_dec" type="xs:string"/>
+												<xs:element name="value_hex" type="xs:string"/>
+											</xs:choice>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="BOOLEAN">
+		<xs:annotation>
+			<xs:documentation>Representation for BOOLEAN ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="hexstring"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="SEQUENCE">
+		<xs:annotation>
+			<xs:documentation>Representation for SEQUENCE ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:choice minOccurs="0" maxOccurs="unbounded">
+											<xs:element ref="BIT_STRING"/>
+											<xs:element ref="BMPSTRING"/>
+											<xs:element ref="BOOLEAN"/>
+											<xs:element ref="CHARACTERSTRING"/>
+											<xs:element ref="DATE"/>
+											<xs:element ref="DATETIME"/>
+											<xs:element ref="DURATION"/>
+											<xs:element ref="EMBEDDEDPDV"/>
+											<xs:element ref="ENUMERATED"/>
+											<xs:element ref="EXTERNAL"/>
+											<xs:element ref="GENERALIZEDTIME"/>
+											<xs:element ref="GENERALSTRING"/>
+											<xs:element ref="GRAPHICSTRING"/>
+											<xs:element ref="IA5STRING"/>
+											<xs:element ref="INTEGER"/>
+											<xs:element ref="NULL"/>
+											<xs:element ref="NUMERICSTRING"/>
+											<xs:element ref="OBJECT_DESCRIPTOR"/>
+											<xs:element ref="OBJECT_IDENTIFIER"/>
+											<xs:element ref="OCTET_STRING"/>
+											<xs:element ref="OID_INTERNATIONALIZED"/>
+											<xs:element ref="PRINTABLESTRING"/>
+											<xs:element ref="REAL"/>
+											<xs:element ref="RELATIVE_OBJECT_IDENTIFIER"/>
+											<xs:element ref="RELATIVE_OID_INTERNATIONALIZED"/>
+											<xs:element ref="SEQUENCE"/>
+											<xs:element ref="SET"/>
+											<xs:element ref="TELETEXSTRING"/>
+											<xs:element ref="TIME"/>
+											<xs:element ref="TIME_OF_DAY"/>
+											<xs:element ref="UNIVERSALSTRING"/>
+											<xs:element ref="UTCTIME"/>
+											<xs:element ref="UTF8STRING"/>
+											<xs:element ref="VIDEOTEXSTRING"/>
+											<xs:element ref="VISIBLESTRING"/>
+											<xs:element ref="ASN1_TYPE"/>
+										</xs:choice>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="SET">
+		<xs:annotation>
+			<xs:documentation>Representation for SET ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:choice minOccurs="0" maxOccurs="unbounded">
+											<xs:element ref="BIT_STRING"/>
+											<xs:element ref="BMPSTRING"/>
+											<xs:element ref="BOOLEAN"/>
+											<xs:element ref="CHARACTERSTRING"/>
+											<xs:element ref="DATE"/>
+											<xs:element ref="DATETIME"/>
+											<xs:element ref="DURATION"/>
+											<xs:element ref="EMBEDDEDPDV"/>
+											<xs:element ref="ENUMERATED"/>
+											<xs:element ref="EXTERNAL"/>
+											<xs:element ref="GENERALIZEDTIME"/>
+											<xs:element ref="GENERALSTRING"/>
+											<xs:element ref="GRAPHICSTRING"/>
+											<xs:element ref="IA5STRING"/>
+											<xs:element ref="INTEGER"/>
+											<xs:element ref="NULL"/>
+											<xs:element ref="NUMERICSTRING"/>
+											<xs:element ref="OBJECT_DESCRIPTOR"/>
+											<xs:element ref="OBJECT_IDENTIFIER"/>
+											<xs:element ref="OCTET_STRING"/>
+											<xs:element ref="OID_INTERNATIONALIZED"/>
+											<xs:element ref="PRINTABLESTRING"/>
+											<xs:element ref="REAL"/>
+											<xs:element ref="RELATIVE_OBJECT_IDENTIFIER"/>
+											<xs:element ref="RELATIVE_OID_INTERNATIONALIZED"/>
+											<xs:element ref="SEQUENCE"/>
+											<xs:element ref="SET"/>
+											<xs:element ref="TELETEXSTRING"/>
+											<xs:element ref="TIME"/>
+											<xs:element ref="TIME_OF_DAY"/>
+											<xs:element ref="UNIVERSALSTRING"/>
+											<xs:element ref="UTCTIME"/>
+											<xs:element ref="UTF8STRING"/>
+											<xs:element ref="VIDEOTEXSTRING"/>
+											<xs:element ref="VISIBLESTRING"/>
+											<xs:element ref="ASN1_TYPE"/>
+										</xs:choice>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="OBJECT_DESCRIPTOR">
+		<xs:annotation>
+			<xs:documentation>Representation for OBJECT DECRIPTOR ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="EXTERNAL">
+		<xs:annotation>
+			<xs:documentation>Representation for EXTERNAL ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ENUMERATED">
+		<xs:annotation>
+			<xs:documentation>Representation for ENUMERATED ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:choice minOccurs="0">
+											<xs:element name="value_dec" type="xs:long"/>
+											<xs:element name="value_hex" type="hexstring"/>
+										</xs:choice>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="EMBEDDEDPDV">
+		<xs:annotation>
+			<xs:documentation>Representation for EMBEDDED PDV ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="TIME">
+		<xs:annotation>
+			<xs:documentation>Representation for TIME ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="UTF8STRING">
+		<xs:annotation>
+			<xs:documentation>Representation for UTF8 STRING ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="BMPSTRING">
+		<xs:annotation>
+			<xs:documentation>Representation for BMP STRING ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="UNIVERSALSTRING">
+		<xs:annotation>
+			<xs:documentation>Representation for UNIVERSAL STRING ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="NUMERICSTRING">
+		<xs:annotation>
+			<xs:documentation>Representation for NUMERIC STRING ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex">
+												<xs:simpleType>
+													<xs:restriction base="xs:string">
+														<xs:pattern value="[0-9]+"/>
+													</xs:restriction>
+												</xs:simpleType>
+											</xs:element>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="PRINTABLESTRING">
+		<xs:annotation>
+			<xs:documentation>Representation for PRINTABLE STRING ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex">
+												<xs:simpleType>
+													<xs:restriction base="xs:string">
+														<xs:pattern value="[A-Za-z0-9 '\(\)\+\-\.\?,:=]{0,}"/>
+													</xs:restriction>
+												</xs:simpleType>
+											</xs:element>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="TELETEXSTRING">
+		<xs:annotation>
+			<xs:documentation>Representation for TELETEX STRING ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex">
+												<xs:simpleType>
+													<xs:restriction base="xs:string">
+														<xs:pattern value="[A-Za-z0-9 !&quot;%&amp;'\(\)\*\+,\-\./:;&lt;=&gt;\?@\[\]_]*"/>
+													</xs:restriction>
+												</xs:simpleType>
+											</xs:element>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="VIDEOTEXSTRING">
+		<xs:annotation>
+			<xs:documentation>Representation for VIDEOTEX STRING ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="IA5STRING">
+		<xs:annotation>
+			<xs:documentation>Representation for IA5 STRING ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GRAPHICSTRING">
+		<xs:annotation>
+			<xs:documentation>Representation for GRAPHIC STRING ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="VISIBLESTRING">
+		<xs:annotation>
+			<xs:documentation>Representation for VISIBLE STRING ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex">
+												<xs:simpleType>
+													<xs:restriction base="xs:string">
+														<xs:pattern value="[A-Za-z0-9 !&quot;#$%&amp;'\(\)\*\+,\-\./:;&lt;=&gt;\?@\[\\\]\^_`]{0,}"/>
+													</xs:restriction>
+												</xs:simpleType>
+											</xs:element>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GENERALSTRING">
+		<xs:annotation>
+			<xs:documentation>Representation for GENERAL STRING ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CHARACTERSTRING">
+		<xs:annotation>
+			<xs:documentation>Representation for CHARACTER STRING ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="OID_INTERNATIONALIZED">
+		<xs:annotation>
+			<xs:documentation>Representation for OBJECT IDENTIFIER INTERNATIALIZED ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RELATIVE_OID_INTERNATIONALIZED">
+		<xs:annotation>
+			<xs:documentation>Representation for RELATIVE OBJECT IDENTIFIER INTERNATIALIZED ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="UTCTIME">
+		<xs:annotation>
+			<xs:documentation>Representation for UTC TIME ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GENERALIZEDTIME">
+		<xs:annotation>
+			<xs:documentation>Representation for GENERALIZED TIME ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="DATE">
+		<xs:annotation>
+			<xs:documentation>Representation for DATE ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="TIME_OF_DAY">
+		<xs:annotation>
+			<xs:documentation>Representation for TIME OF DAY ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="DATETIME">
+		<xs:annotation>
+			<xs:documentation>Representation for DATETIME ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="DURATION">
+		<xs:annotation>
+			<xs:documentation>Representation for DURATION ASN.1 type</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="asn1_type">
+					<xs:sequence minOccurs="0">
+						<xs:element name="value_block">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="common_block">
+										<xs:sequence minOccurs="0">
+											<xs:element name="value_hex" type="xs:string"/>
+										</xs:sequence>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
