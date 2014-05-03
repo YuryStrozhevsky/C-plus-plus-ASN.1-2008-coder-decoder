@@ -8,7 +8,7 @@ Almost all specialists know about ASN.1, some of them know about DER (Distinguis
 
 ## ASN1js project
 
-In 2014 I made a project [ASN1js](https://github.com/GlobalSign/ASN1.js). This is an ASN.1 BER encoder/decoder on JavaScript language. In fact all code for [ASN1js](https://github.com/GlobalSign/ASN1.js) is a "porting" from this project code, from C++ to JavScript. Also the same was using inside [PKIjs](https://github.com/GlobalSign/PKI.js) project. For the moment [ASN1js](https://github.com/GlobalSign/ASN1.js) has many improvements related to ASN.1 schema validation. Also because of JavaScript [ASN1js](https://github.com/GlobalSign/ASN1.js) has some limitations and slightly diferent code structure. For the moment I have a plans to back-port all [ASN1js](https://github.com/GlobalSign/ASN1.js) improvements to C++ project. Coming soon!
+In 2014 I made a project [ASN1js](https://github.com/GlobalSign/ASN1.js). This is an ASN.1 BER encoder/decoder on JavaScript language. In fact all code for [ASN1js](https://github.com/GlobalSign/ASN1.js) is a "porting" from this project code, from C++ to JavScript. Also the same was using inside [PKIjs](https://github.com/GlobalSign/PKI.js) project. [ASN1js](https://github.com/GlobalSign/ASN1.js) has many improvements related to ASN.1 schema validation. Also because of JavaScript [ASN1js](https://github.com/GlobalSign/ASN1.js) has some limitations and slightly diferent code structure. For the moment I have a plans to back-port all [ASN1js](https://github.com/GlobalSign/ASN1.js) improvements to C++ project. Coming soon!
 
 ## Features of C++ ASN.1:2008 BER coder/encoder
 
