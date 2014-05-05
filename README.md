@@ -28,7 +28,7 @@ In 2014 I made a project [ASN1js](https://github.com/GlobalSign/ASN1.js). This i
 ## Usage
 
 Firstly you need to create a configuration file. Schema for configuration file is inside "code/CompliConfig.xsd". Example of such configuration:
-```
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <config>
   <file_group>
