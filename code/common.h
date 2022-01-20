@@ -26,9 +26,9 @@
 #ifndef _17DEA975_9CB5_41BB_ACE6_98FED698FBC3
 #define _17DEA975_9CB5_41BB_ACE6_98FED698FBC3
 //**************************************************************************
-// Функция перевода числа из основания "2^base" в число с основанием 10.
+// Function to convert a number in base 2 to the number in base 10.
 //
-// (значение "enc_size" позволяет задать количество элементов в массиве "enc")
+// (The value "enc_size" allows specifying the number of elements in array "enc")
 //
 void from_base( const unsigned char* enc, unsigned long long* value, const unsigned char base, const unsigned char enc_size )
 {

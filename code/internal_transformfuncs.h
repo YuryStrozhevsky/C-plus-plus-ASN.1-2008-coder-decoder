@@ -595,9 +595,9 @@ bool from_xml( MSXML2::IXMLDOMElementPtr element, BASIC_type< In, Out >** basic_
  return false;
 }
 //**************************************************************************
-// ’очу функцию, котора€ бы успешно кодировала произвольные типы (из числа
-// известных конечно) по переданному ей XML описанию. ƒолжны кодироватьс€ как
-// примитивные типы, так и конструктивные.
+// Function that would be able to encode arbitrary types (allowed ones, of course)
+// given an XML description. It should be able to encode both primitive and
+// constructed types.
 //
 template< typename T >
 encode_result* encode_BER( T stream, MSXML2::IXMLDOMElementPtr element )
